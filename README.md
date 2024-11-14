@@ -1,93 +1,143 @@
-# Model Card for Model ID
+---
+library_name: transformers
+tags: []
+---
 
-<!-- Provide a quick summary of what the model is/does. -->
+# Model Card for Llama-3.2-1B-Instruct Fine-Tuned with LoRA Weights
 
+This model is a fine-tuned version of the "meta-llama/Llama-3.2-1B-Instruct" using LoRA (Low-Rank Adaptation) weights. 
+It was trained to assist in answering questions and providing information on a range of topics. 
+The model is designed to be used with the 🤗 Hugging Face transformers library
 
-
-### Model Details
+## Model Details
 
 ### Model Description
 
-This model is a fine-tuned version of Llama-2-7b-chat, optimized for tasks related to fitness assistance. It has been trained to provide recommendations, answer questions, and perform related language-based tasks within the fitness and exercise domain.
+This model is based on the Llama-3.2-1B-Instruct architecture and has been fine-tuned with LoRA weights to improve its performance on specific downstream tasks. It was trained on a carefully selected dataset to enable more focused and contextual responses. The model is designed to perform well in environments where GPU resources may be limited, using optimizations like FP16 and device mapping.
 
-- **Developed by:** Soorya03
-- **Finetuned from model:** meta-llama/Llama-2-7b-chat-hf
-- **Model Type:** Causal Language Model with LoRA fine-tuning
-- **Language(s):** English
-- **License:** Refer to the original model’s license
-- **Model Repository:** Soorya03/Llama-2-7b-chat-finetune
+- **Developed by:**  Soorya R
+- **Model type:** Causal Language Model with LoRA fine-tuning
+- **Language(s) (NLP):** Primarily English
+- **License:** Model card does not specify a particular license; check the base model's license on Hugging Face for usage guidelines.
+- **Finetuned from model:** meta-llama/Llama-3.2-1B-Instruct
 
+### Model Sources [optional]
+
+- **Repository:** https://huggingface.co/Soorya03/Llama-3.2-1B-Instruct-FitnessAssistant/tree/main
 
 ## Uses
 
 ### Direct Use
-This model is intended for interactive fitness and exercise assistance, such as providing exercise recommendations, suggesting workout routines, and answering general fitness-related questions.
 
-### Downstream Use
-May be adapted to various other fitness or health-oriented conversational applications.
+This model can be directly used for general-purpose question-answering and information retrieval tasks in English. 
+It is suitable for chatbots and virtual assistants and performs well in scenarios where contextual responses are important.
+
+### Downstream Use 
+
+The model may also be further fine-tuned for specific tasks that require conversational understanding and natural language generation.
 
 ### Out-of-Scope Use
-Not suitable for medical or professional health advice. Avoid use cases where specialized knowledge or regulated health guidelines are required.
 
-### Bias, Risks, and Limitations
-- **Potential Bias:** The model was fine-tuned on a limited dataset and might not cover all fitness-related questions with cultural or demographic sensitivity.
-- **Limitations:** Not a replacement for professional medical advice.
+This model is not suitable for tasks outside of general-purpose NLP.
+It should not be used for high-stakes decision-making, tasks requiring detailed scientific or legal knowledge, or applications that could impact user safety or privacy.
+
+## Bias, Risks, and Limitations
+
+This model was fine-tuned on a curated dataset but still inherits biases from the underlying Llama model.
+Users should be cautious about using it in sensitive or biased contexts, as the model may inadvertently produce outputs that reflect biases present in the training data.
+
 ### Recommendations
-Users should be aware that the model's responses are based on general fitness knowledge and are not specialized medical guidance.
 
+Users (both direct and downstream) should be made aware of the potential risks and limitations of the model, including biases in language or domain limitations.
+More robust evaluation is recommended before deployment in critical applications.
 
 ## How to Get Started with the Model
 
+Use the code below to get started with the model.
+
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-model = AutoModelForCausalLM.from_pretrained("Soorya03/Llama-2-7b-chat-finetune", torch_dtype=torch.float16)
-tokenizer = AutoTokenizer.from_pretrained("Soorya03/Llama-2-7b-chat-finetune")
+# Load the model
+model = AutoModelForCausalLM.from_pretrained("Soorya03/Llama-3.2-1B-Instruct-LoRA")
 
-inputs = tokenizer("Give me a fitness tip", return_tensors="pt")
+# Load the tokenizer
+tokenizer = AutoTokenizer.from_pretrained("Soorya03/Llama-3.2-1B-Instruct-LoRA")
+
+# Generate text
+inputs = tokenizer("Your input text here", return_tensors="pt")
 outputs = model.generate(**inputs)
 print(tokenizer.decode(outputs[0], skip_special_tokens=True))
-
 
 ## Training Details
 
 ### Training Data
 
-The model was fine-tuned on a fitness and exercise dataset (onurSakar/GYM-Exercise) to improve its domain knowledge in providing fitness-related responses.
-<!-- This should link to a Dataset Card, perhaps with a short stub of information on what the training data is all about as well as documentation related to data pre-processing or additional filtering. -->
+The model was fine-tuned on a custom dataset, optimized for contextual question-answering tasks and general-purpose conversational use.
+The dataset was split into training and validation sets to enhance model generalization.
 
 ### Training Procedure
 
-<!-- This relates heavily to the Technical Specifications. Content here should link to that section when it is relevant to the training procedure. -->
-- **Method:** LoRA fine-tuning on top of Llama-2-7b-chat.
-- **Hyperparameters:** Adjusted learning rate, FP16 precision for efficiency.
-- **Compute:** Training was performed on Google Colab with a single GPU.
+#### Training Hyperparameters
 
-## Evaluation
+**Precision:** FP16 mixed precision
+**Epochs:** 10
+**Batch size:** 4
+**Learning rate:** 2e-4
 
-<!-- This section describes the evaluation protocols and provides the results. -->
+#### Times 
 
-### Testing Data & Metrics
+**Training time:** Approximately 1 hour on Google Colab's T4 GPU.
 
-#### Testing Data
- 
-Sample fitness-related prompts were used for evaluation, but a formal benchmarking dataset was not utilized.
+## Model Examination
 
-#### Metrics
-
-Manual qualitative assessments showed the model’s suitability for fitness Q&A and general suggestions.
-
-### Results
-
-The model effectively generates coherent responses related to fitness, workouts, and exercise routines, with accurate language comprehension.
-
+For interpretability, tools like transformers's pipeline can help visualize the model's attention mechanisms and interpret its outputs.
+However, users should be aware that this is a black-box model.
 
 ## Environmental Impact
 
+Carbon emissions can be estimated using the [Machine Learning Impact calculator](https://mlco2.github.io/impact#compute) presented in [Lacoste et al. (2019)](https://arxiv.org/abs/1910.09700).
+
+- **Hardware Type:** Google Colab T4 GPU
+- **Hours used:** 1
+- **Cloud Provider:** Google Colab
+
+## Technical Specifications
+
+### Model Architecture and Objective
+
+The model follows the Llama architecture, which is a transformer-based model designed for NLP tasks.
+The objective of fine-tuning with LoRA weights was to enhance contextual understanding and response accuracy.
+
 ### Compute Infrastructure
 
-- **Hardware Type:** Google Colab (NVIDIA GPU)
+#### Hardware
 
-## Model Architecture and Objective
+Google Colab T4 GPU with FP16 precision enabled
 
-This model is based on the Llama-2-7b-chat architecture, adapted to provide conversational responses within a specific fitness domain.
+#### Software
 
+**Library:** 🤗 Hugging Face transformers
+**Framework:** PyTorch
+**Other dependencies:** PEFT library for LoRA weights integration
+
+## Citation [optional]
+
+@misc{soorya2024llama,
+  author = {Soorya R},
+  title = {Llama-3.2-1B-Instruct Fine-Tuned with LoRA Weights},
+  year = {2024},
+  url = {https://huggingface.co/Soorya03/Llama-3.2-1B-Instruct-LoRA},
+}
+
+## Glossary
+
+FP16: 16-bit floating point precision, used to reduce memory usage and speed up computation.
+LoRA: Low-Rank Adaptation, a method for parameter-efficient fine-tuning.
+
+## More Information [optional]
+
+For more details, please visit the model repository.
+
+## Model Card Authors
+
+Soorya R
