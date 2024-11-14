@@ -1,7 +1,4 @@
----
-library_name: transformers
-tags: []
----
+
 
 # Model Card for Llama-3.2-1B-Instruct Fine-Tuned with LoRA Weights
 
